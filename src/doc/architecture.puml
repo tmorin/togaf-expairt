@@ -1,0 +1,54 @@
+@startuml context
+!include https://raw.githubusercontent.com/tmorin/plantuml-libs/master/distribution/c4model/single.puml
+
+Person('architect', 'Architect', 'An architect willing to get assistance when performing architecture work.')
+System('togaf_expairt', 'TOGAF Expairt', 'A system that helps architects to perform architecture work with the support of AI.')
+ExternalSystem('qdrant', 'Qdrant', 'A database that stores the embeddings of the TOGAF Library.')
+ExternalSystem('ollama', 'Ollama', 'A platform to run, deploy, and share AI models locally without the need for cloud resources.')
+ExternalSystem('mistral', 'Mistral', 'An open-source AI company specializing in developing advanced, large language models.')
+ExternalSystem('togaf_library', 'TOGAF Library', 'a comprehensive repository of guidelines, templates, and best practices that support the implementation and use of the TOGAF framework for enterprise architecture.')
+
+architect --> togaf_expairt: Uses
+togaf_expairt --> qdrant: Uses
+togaf_expairt --> togaf_library: Analyzes
+togaf_expairt --> ollama: Uses
+togaf_expairt --> mistral: Uses
+@enduml
+
+@startuml container
+!include https://raw.githubusercontent.com/tmorin/plantuml-libs/master/distribution/c4model/single.puml
+
+Person('architect', 'Architect', 'An architect willing to get assistance when performing architecture work.')
+SystemBoundary('togaf_expairt', 'TOGAF Expairt') {
+    Container('rest_server', 'REST server', 'A REST server that exposes the TOGAF Expairt API.', 'Quarkus Server')
+    Container('cli_client', 'CLI client', 'A CLI client that interacts with the TOGAF Expairt API.', 'Quarkus CLI')
+}
+ExternalSystem('qdrant', 'Qdrant', 'A database that stores the embeddings of the TOGAF Library.')
+ExternalSystem('ollama', 'Ollama', 'A platform to run, deploy, and share AI models locally without the need for cloud resources.')
+ExternalSystem('mistral', 'Mistral', 'An open-source AI company specializing in developing advanced, large language models.')
+ExternalSystem('togaf_library', 'TOGAF Library', 'a comprehensive repository of guidelines, templates, and best practices that support the implementation and use of the TOGAF framework for enterprise architecture.')
+
+architect --> cli_client: Uses
+cli_client --> rest_server: Relationship('Consumes REST', 'HTTP')
+rest_server --> qdrant: Relationship('Reads/Writes data', 'HTTP')
+rest_server --> togaf_library: Relationship('Fetch documents', 'HTTP')
+rest_server --> ollama: Relationship('Consumes REST', 'HTTP')
+rest_server --> mistral: Relationship('Consumes REST', 'HTTP')
+@enduml
+
+@startuml component
+!include https://raw.githubusercontent.com/tmorin/plantuml-libs/master/distribution/c4model/single.puml
+
+Component("RestClient", "RestClient")
+Component("RestServer", "RestServer")
+Component("QdrantTogafLibraryRepository", "QdrantTogafLibraryRepository")
+Component("TogafLibraryFeeder", "TogafLibraryFeeder")
+Component("TogafExpairtCore", "TogafExpairtCore")
+Component("Langchain4jChat", "Langchain4jChat")
+
+RestClient --> RestServer
+RestServer --> TogafExpairtCore
+TogafExpairtCore --> Langchain4jChat
+TogafExpairtCore --> TogafLibraryFeeder
+TogafLibraryFeeder --> QdrantTogafLibraryRepository
+@enduml
