@@ -1,6 +1,5 @@
 package io.morin.togafexpairt.restcli;
 
-import io.morin.togafexpairt.fwk.SettingReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -29,9 +28,9 @@ public class RestCli {
                         break;
                     }
 
-                    val url = URI.create(
-                        SettingReader.readString("togafexpairt.rest_cli.prompt_url", "http://localhost:9090/prompt")
-                    );
+                    val restCliSettings = RestCliSettings.builder().build();
+
+                    val url = URI.create(restCliSettings.getPromptUrl());
 
                     val request = HttpRequest.newBuilder()
                         .uri(url)
