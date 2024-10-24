@@ -73,7 +73,7 @@ public enum TogafLibraryRegistry {
                 try {
                     return uri.toURL();
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new IllegalStateException("Failed to convert URI to URL", e);
                 }
             })
             .toList();

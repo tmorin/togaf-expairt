@@ -38,11 +38,6 @@ class Langchain4jChat implements Chat {
     }
 
     @Override
-    public @NonNull String ask(@NonNull String message) {
-        return assistant.chat(message);
-    }
-
-    @Override
     @SneakyThrows
     @SuppressWarnings("java:S112")
     public void ask(@NonNull String message, @NonNull OutputStream outputStream) {
