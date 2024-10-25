@@ -1,6 +1,7 @@
 package io.morin.togafexpairt.langchain4j;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
 import lombok.AccessLevel;
@@ -20,7 +21,8 @@ class EmbeddingModelFactory {
     EmbeddingModel create() {
         log.info("create the EmbeddingModel: {}", langchain4jSettings.getEmbeddingModel());
         return switch (langchain4jSettings.getEmbeddingModel()) {
-            case MINI_LM -> new AllMiniLmL6V2QuantizedEmbeddingModel();
+            case MINI_LM -> new AllMiniLmL6V2EmbeddingModel();
+            case MINI_LM_Q -> new AllMiniLmL6V2QuantizedEmbeddingModel();
             case OLLAMA -> OllamaEmbeddingModel.builder()
                 .baseUrl(langchain4jSettings.getOllamaSettings().getBaseUrl())
                 .modelName(langchain4jSettings.getOllamaSettings().getEmbeddingModelName())

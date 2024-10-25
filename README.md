@@ -46,25 +46,25 @@ Or you can set the `togafexpairt.langchain4j.chat_model` environment variable:
 togafexpairt_langchain4j_integration=MISTRAL java -jar togafexpairt-0.0.1-SNAPSHOT.jar
 ```
 
-| Key                                                    | Default                        | Enumeration         |
-|--------------------------------------------------------|--------------------------------|---------------------|
-| `togafexpairt.langchain4j.chat_model`                  | `OLLAMA`                       | `MISTRAL`, `OLLAMA` |
-| `togafexpairt.langchain4j.embedding_model`             | `OLLAMA`                       | `MINI_LM`, `OLLAMA` |
-| `togafexpairt.langchain4j.dimension`                   | `768`                          |                     |
-| `togafexpairt.langchain4j.max_memory_messages`         | `20`                           |                     |
-| `togafexpairt.langchain4j.max_segment_size_in_chars`   | `500`                          |                     |
-| `togafexpairt.langchain4j.max_overlap_size_in_chars`   | `60`                           |                     |
-| `togafexpairt.langchain4j.max_embedded_content_result` | `30`                           |                     |
-| `togafexpairt.mistral.model_name`                      | `mistral-medium`               |                     |
-| `togafexpairt.mistral.api_key`                         |                                |                     |
-| `togafexpairt.qdrant.host`                             | `localhost`                    |                     |
-| `togafexpairt.qdrant.port`                             | `6334`                         |                     |
-| `togafexpairt.ollama.chat_model_name`                  | `llama3.2:1b`                  |                     |
-| `togafexpairt.ollama.embedding_model_name`             | `nomic-embed-text`             |                     |
-| `togafexpairt.ollama.base_url`                         | `http://localhost:11434`       |                     |
-| `togafexpairt.restserver.host`                         | `localhost`                    |                     |
-| `togafexpairt.restserver.port`                         | `9090`                         |                     |
-| `togafexpairt.rest_cli.prompt_url`                     | `http://localhost:9090/prompt` |                     |
+| Key                                                    | Default                        | Enumeration                      |
+|--------------------------------------------------------|--------------------------------|----------------------------------|
+| `togafexpairt.langchain4j.chat_model`                  | `OLLAMA`                       | `MISTRAL`, `OLLAMA`              |
+| `togafexpairt.langchain4j.embedding_model`             | `OLLAMA`                       | `MINI_LM`, `MINI_LM_Q`, `OLLAMA` |
+| `togafexpairt.langchain4j.dimension`                   | `384`                          |                                  |
+| `togafexpairt.langchain4j.max_memory_messages`         | `20`                           |                                  |
+| `togafexpairt.langchain4j.max_segment_size_in_chars`   | `500`                          |                                  |
+| `togafexpairt.langchain4j.max_overlap_size_in_chars`   | `60`                           |                                  |
+| `togafexpairt.langchain4j.max_embedded_content_result` | `30`                           |                                  |
+| `togafexpairt.mistral.model_name`                      | `mistral-medium`               |                                  |
+| `togafexpairt.mistral.api_key`                         |                                |                                  |
+| `togafexpairt.qdrant.host`                             | `localhost`                    |                                  |
+| `togafexpairt.qdrant.port`                             | `6334`                         |                                  |
+| `togafexpairt.ollama.chat_model_name`                  | `llama3.2:1b`                  |                                  |
+| `togafexpairt.ollama.embedding_model_name`             | `nomic-embed-text`             |                                  |
+| `togafexpairt.ollama.base_url`                         | `http://localhost:11434`       |                                  |
+| `togafexpairt.restserver.host`                         | `localhost`                    |                                  |
+| `togafexpairt.restserver.port`                         | `9090`                         |                                  |
+| `togafexpairt.rest_cli.prompt_url`                     | `http://localhost:9090/prompt` |                                  |
 
 ## Dependencies
 

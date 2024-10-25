@@ -40,6 +40,7 @@ class Langchain4jSettings {
      */
     enum EmbeddingModel {
         MINI_LM,
+        MINI_LM_Q,
         OLLAMA
     }
 
@@ -58,14 +59,14 @@ class Langchain4jSettings {
     @NonNull
     @Builder.Default
     Langchain4jSettings.EmbeddingModel embeddingModel = EmbeddingModel.valueOf(
-        SettingReader.readString("togafexpairt.langchain4j.embedding_model", EmbeddingModel.OLLAMA.name())
+        SettingReader.readString("togafexpairt.langchain4j.embedding_model", EmbeddingModel.MINI_LM.name())
     );
 
     /**
      * The dimension of the embeddings.
      */
     @Builder.Default
-    int dimension = SettingReader.readInt("togafexpairt.langchain4j.dimension", 768);
+    int dimension = SettingReader.readInt("togafexpairt.langchain4j.dimension", 384);
 
     /**
      * The maximum number of messages to keep in memory.

@@ -1,8 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="RestServer - ollama" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="io.morin.togafexpairt.restserver.RestServer" />
+  <configuration default="false" name="Indexer" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.morin.togafexpairt.cli.IndexerCli" />
     <module name="togaf-expairt" />
-    <option name="VM_PARAMETERS" value="-Dtogafexpairt.feeding.force=false -Dtogafexpairt.langchain4j.chat_model=OLLAMA -Dtogafexpairt.langchain4j.embedding_model=OLLAMA" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="io.morin.togafexpairt_deprecated.restserver.*" />
