@@ -18,16 +18,16 @@ The following command will start the application:
 java -cp togaf-expairt.jar io.morin.togafexpairt.restserver.RestServer
 ```
 
-**Start the REST CLI**
+**Chat with the server using a CLI prompt**
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.indexer.IndexerCli
+java -cp togaf-expairt.jar io.morin.togafexpairt.cli.RestClientCli
 ```
 
-**Start the Indexer CLI**
+**Perform an indexation or re-indexation**
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.restcli.RestCli
+java -cp togaf-expairt.jar io.morin.togafexpairt.cli.IndexerCli
 ```
 
 ## Configuration

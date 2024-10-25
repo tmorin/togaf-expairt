@@ -5,7 +5,7 @@
     <option name="VM_PARAMETERS" value="-Dtogafexpairt.feeding.force=false -Dtogafexpairt.langchain4j.chat_model=OLLAMA -Dtogafexpairt.langchain4j.embedding_model=OLLAMA" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="io.morin.togafexpairt.restserver.*" />
+        <option name="PATTERN" value="io.morin.togafexpairt_deprecated.restserver.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
