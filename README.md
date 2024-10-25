@@ -1,7 +1,7 @@
 # TOGAF Expairt
 
 > An experimental project leveraging the power of AI to help architects to _architect_ better.
-> The project provides a REST server feeding an embedded Neo4j database with codebase data and a REST CLI to interact with the server.
+> The project provides a REST server, a REST CLI, and an Indexer CLI.
 
 ## Requirements
 
@@ -15,10 +15,16 @@ The following command will start the application:
 **Start the REST server**
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.restserver.RestServer <codebase path>
+java -cp togaf-expairt.jar io.morin.togafexpairt.restserver.RestServer
 ```
 
 **Start the REST CLI**
+
+```shell
+java -cp togaf-expairt.jar io.morin.togafexpairt.indexer.IndexerCli
+```
+
+**Start the Indexer CLI**
 
 ```shell
 java -cp togaf-expairt.jar io.morin.togafexpairt.restcli.RestCli
@@ -53,8 +59,8 @@ togafexpairt_langchain4j_integration=MISTRAL java -jar togafexpairt-0.0.1-SNAPSH
 | `togafexpairt.mistral.api_key`                         |                                |                     |
 | `togafexpairt.qdrant.host`                             | `localhost`                    |                     |
 | `togafexpairt.qdrant.port`                             | `6334`                         |                     |
-| `togafexpairt.ollama.chat_model_name`                  | `mistral`                      | `MISTRAL`, `OLLAMA` |
-| `togafexpairt.ollama.embedding_model_name`             | `mistral`                      | `MISTRAL`, `OLLAMA` |
+| `togafexpairt.ollama.chat_model_name`                  | `llama3.2:1b`                  |                     |
+| `togafexpairt.ollama.embedding_model_name`             | `nomic-embed-text`             |                     |
 | `togafexpairt.ollama.base_url`                         | `http://localhost:11434`       |                     |
 | `togafexpairt.restserver.host`                         | `localhost`                    |                     |
 | `togafexpairt.restserver.port`                         | `9090`                         |                     |

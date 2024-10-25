@@ -20,34 +20,38 @@ togaf_expairt --> mistral: Uses
 
 Person('architect', 'Architect', 'An architect willing to get assistance when performing architecture work.')
 SystemBoundary('togaf_expairt', 'TOGAF Expairt') {
-    Container('rest_server', 'REST server', 'A REST server that exposes the TOGAF Expairt API.', 'Quarkus Server')
-    Container('cli_client', 'CLI client', 'A CLI client that interacts with the TOGAF Expairt API.', 'Quarkus CLI')
+    Container('rest_server', 'REST Server', 'A REST server that exposes the TOGAF Expairt API.', 'Plain Java')
+    Container('cli_client', 'CLI Client', 'A CLI client that interacts with the TOGAF Expairt API.', 'Plain Java')
+    Container('cli_indexer', 'CLI Indexer', 'A CLI tool that indexes the TOGAF Library.', 'Plain Java')
 }
 ExternalSystem('qdrant', 'Qdrant', 'A database that stores the embeddings of the TOGAF Library.')
 ExternalSystem('ollama', 'Ollama', 'A platform to run, deploy, and share AI models locally without the need for cloud resources.')
 ExternalSystem('mistral', 'Mistral', 'An open-source AI company specializing in developing advanced, large language models.')
-ExternalSystem('togaf_library', 'TOGAF Library', 'a comprehensive repository of guidelines, templates, and best practices that support the implementation and use of the TOGAF framework for enterprise architecture.')
+ExternalSystem('togaf_library', 'TOGAF Library', 'A comprehensive repository of guidelines, templates, and best practices that support the implementation and use of the TOGAF framework for enterprise architecture.')
 
 architect --> cli_client: Uses
 cli_client --> rest_server: Relationship('Consumes REST', 'HTTP')
-rest_server --> qdrant: Relationship('Reads/Writes data', 'HTTP')
-rest_server --> togaf_library: Relationship('Fetch documents', 'HTTP')
+rest_server --> qdrant: Relationship('Reads embeddings', 'HTTP')
 rest_server --> ollama: Relationship('Consumes REST', 'HTTP')
 rest_server --> mistral: Relationship('Consumes REST', 'HTTP')
+cli_indexer ---> togaf_library: Relationship('Fetch documents', 'HTTP')
+cli_indexer --> qdrant: Relationship('Writes embeddings', 'HTTP')
 @enduml
 
 @startuml component
 !include https://raw.githubusercontent.com/tmorin/plantuml-libs/master/distribution/c4model/single.puml
 
-Component("RestClient", "RestClient")
+Component("IndexerCli", "IndexerCli")
+Component("RestCli", "RestCli")
 Component("RestServer", "RestServer")
 Component("QdrantTogafLibraryRepository", "QdrantTogafLibraryRepository")
 Component("TogafLibraryFeeder", "TogafLibraryFeeder")
 Component("TogafExpairtCore", "TogafExpairtCore")
 Component("Langchain4jChat", "Langchain4jChat")
 
-RestClient --> RestServer
+RestCli --> RestServer
 RestServer --> TogafExpairtCore
+IndexerCli --> TogafExpairtCore
 TogafExpairtCore --> Langchain4jChat
 TogafExpairtCore --> TogafLibraryFeeder
 TogafLibraryFeeder --> QdrantTogafLibraryRepository
