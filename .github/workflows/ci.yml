@@ -17,6 +17,13 @@ jobs:
           distribution: "adopt"
           cache: maven
 
+      - name: Cache Docker Volumes
+        id: volumes
+        uses: actions/cache@v4
+        with:
+          path: volumes
+          key: ${{ runner.os }}-volumes
+
       - name: "Build with Maven"
         run: mvn --batch-mode --update-snapshots verify
 

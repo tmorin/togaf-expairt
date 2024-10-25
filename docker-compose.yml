@@ -5,12 +5,12 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-      - qdrant_data:/qdrant/storage
+      - ./volumes/qdrant:/qdrant/storage
   ollama-server:
     build:
       context: src/main/docker/ollama
     volumes:
-      - ollama:/root/.ollama
+      - ./volumes/ollama:/root/.ollama
     ports:
       - "11434:11434"
     healthcheck:
@@ -23,7 +23,7 @@ services:
       - run
       - llama3.2:1b
     volumes:
-      - ollama:/root/.ollama
+      - ./volumes/ollama:/root/.ollama
     environment:
       - OLLAMA_HOST=http://ollama-server:11434
     depends_on:
@@ -35,12 +35,9 @@ services:
       - run
       - nomic-embed-text
     volumes:
-      - ollama:/root/.ollama
+      - ./volumes/ollama:/root/.ollama
     environment:
       - OLLAMA_HOST=http://ollama-server:11434
     depends_on:
       ollama-server:
         condition: service_healthy
-volumes:
-  qdrant_data:
-  ollama:
