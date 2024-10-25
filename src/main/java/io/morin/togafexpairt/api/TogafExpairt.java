@@ -30,6 +30,7 @@ public interface TogafExpairt {
         /**
          * Force the feeding of TOGAF Library based on the TOGAF Standard: https://pubs.opengroup.org/togaf-standard.
          */
+        @Builder.Default
         boolean forceFeeding = SettingReader.readBoolean("togafexpairt.feeding.force", false);
     }
 }
