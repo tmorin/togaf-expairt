@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 /**
- * This Java Main class is used to start the TOGAF Expairt REST server.
+ * An HTTP server exposing a REST API of the AI chat.
  */
 @Slf4j
 public class RestServer {
@@ -29,7 +29,7 @@ public class RestServer {
         log.info("feeding the TOGAF library repository");
         togafExpairt.feed();
 
-        log.info("starting REST server for codebase");
+        log.info("starting REST server");
         Optional.of(PromptHandler.builder().togafExpairt(togafExpairt).build())
             .map(promptHandler -> HttpServerFactory.builder().promptHandler(promptHandler).build().create())
             .orElseThrow(() -> new IllegalStateException("No TogafExpairtFactory found"))

@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 /**
- * This Java main class provide CLI to send prompt to the TOGAF Expairt server and stream the response.
+ * A command line interface to interact with the REST Server.
  */
 @Slf4j
 public class RestCli {
