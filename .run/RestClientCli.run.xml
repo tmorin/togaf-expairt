@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="RestCli" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="RestClientCli" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="io.morin.togafexpairt.cli.RestClientCli" />
     <module name="togaf-expairt" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="io.morin.togafexpairt.cli.*" />
+        <option name="PATTERN" value="io.morin.togafexpairt.restcli.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

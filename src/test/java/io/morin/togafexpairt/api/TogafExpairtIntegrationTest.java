@@ -6,37 +6,48 @@ import java.util.ServiceLoader;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 @Slf4j
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TogafExpairtIntegrationTest extends BaseIntegrationTest {
 
-    TogafExpairt togafExpairt;
-
-    @BeforeEach
-    public void setUp() {
-        // create the TogafExpairt
-        togafExpairt = ServiceLoader.load(TogafExpairtFactory.class)
+    @Test
+    @Order(1)
+    void shouldIndexWithoutRouting() {
+        System.setProperty("togafexpairt.langchain4j.query_routing_enabled", "false");
+        val togafExpairt = ServiceLoader.load(TogafExpairtFactory.class)
             .findFirst()
             .orElseThrow()
             .create(TogafExpairt.Settings.builder().build());
+        Assertions.assertDoesNotThrow(togafExpairt::feed);
     }
 
     @Test
-    void shouldIndex() {
-        Assertions.assertDoesNotThrow(() -> togafExpairt.feed());
+    @Order(2)
+    void shouldIndexWithRouting() {
+        System.setProperty("togafexpairt.langchain4j.query_routing_enabled", "true");
+        val togafExpairt = ServiceLoader.load(TogafExpairtFactory.class)
+            .findFirst()
+            .orElseThrow()
+            .create(TogafExpairt.Settings.builder().build());
+        Assertions.assertDoesNotThrow(togafExpairt::feed);
     }
 
     @Test
+    @Order(3)
     @SneakyThrows
     void shouldReply() {
+        System.setProperty("togafexpairt.langchain4j.query_routing_enabled", "false");
         try (val byteArrayOutputStream = new ByteArrayOutputStream()) {
             val streamMessageCommand = StreamMessageCommand.builder()
                 .prompt("Provide a simple definition of architecture.")
                 .outputStream(byteArrayOutputStream)
                 .build();
+            val togafExpairt = ServiceLoader.load(TogafExpairtFactory.class)
+                .findFirst()
+                .orElseThrow()
+                .create(TogafExpairt.Settings.builder().build());
             togafExpairt.execute(streamMessageCommand);
             val result = byteArrayOutputStream.toString();
             Assertions.assertNotNull(result);

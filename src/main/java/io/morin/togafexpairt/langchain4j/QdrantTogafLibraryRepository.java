@@ -5,6 +5,9 @@ import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import io.morin.togafexpairt.core.TogafLibraryRegistry;
 import io.morin.togafexpairt.core.TogafLibraryRepository;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +23,7 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
     TextDocumentParser textDocumentParser = new TextDocumentParser();
 
     @NonNull
-    EmbeddingStoreIngestor ingestor;
+    Map<TogafLibraryRegistry, EmbeddingStoreIngestor> ingestors;
 
     @NonNull
     Langchain4jSettings langchain4jSettings;
@@ -30,8 +33,32 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
     public boolean isEmpty() {
         log.info("checking if the TOGAF library repository is empty");
         try (val qdrantClient = QdrantUtils.createClient(langchain4jSettings)) {
-            val size = qdrantClient.countAsync(langchain4jSettings.getQdrantSettings().getCollectionName()).get();
-            return size == 0;
+            if (langchain4jSettings.isQueryRoutingEnabled()) {
+                final long size = Arrays.stream(TogafLibraryRegistry.values())
+                    .map(togafLibraryRegistry ->
+                        QdrantUtils.getCollectionName(langchain4jSettings, togafLibraryRegistry)
+                    )
+                    .map(collectionName -> {
+                        try {
+                            return qdrantClient.countAsync(collectionName).get();
+                        } catch (InterruptedException e) {
+                            log.error("interrupted while counting the collection", e);
+                            Thread.currentThread().interrupt();
+                            return 0L;
+                        } catch (ExecutionException e) {
+                            throw new IllegalStateException("Failed to count the collection", e);
+                        }
+                    })
+                    .reduce(Long::sum)
+                    .orElse(0L);
+                log.info("the TOGAF library repository is empty: {}", size == 0);
+                return size == 0;
+            } else {
+                val collectionName = QdrantUtils.getCollectionName(langchain4jSettings);
+                val size = qdrantClient.countAsync(collectionName).get();
+                log.info("the TOGAF library repository is empty: {}", size == 0);
+                return size == 0;
+            }
         }
     }
 
@@ -39,7 +66,13 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
     @SneakyThrows
     public void reset() {
         log.info("resetting the TOGAF library repository");
-        QdrantUtils.resetCollection(langchain4jSettings);
+        if (langchain4jSettings.isQueryRoutingEnabled()) {
+            Arrays.stream(TogafLibraryRegistry.values()).forEach(togafLibraryRegistry ->
+                QdrantUtils.resetCollections(langchain4jSettings, togafLibraryRegistry)
+            );
+        } else {
+            QdrantUtils.resetCollection(langchain4jSettings);
+        }
     }
 
     @Override
@@ -51,12 +84,13 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
             .map(url -> {
                 log.info("loading document from {}", url);
                 val document = UrlDocumentLoader.load(url, textDocumentParser);
-                document.metadata().put("document_group", togafLibraryRegistry.getTitle());
+                document.metadata().put("document_group_name", togafLibraryRegistry.getTitle());
+                document.metadata().put("document_group_description", togafLibraryRegistry.getDescription());
                 return document;
             })
             .toList();
 
         log.info("ingesting {} documents", documents.size());
-        documents.forEach(ingestor::ingest);
+        documents.forEach(ingestors.get(togafLibraryRegistry)::ingest);
     }
 }

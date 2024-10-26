@@ -23,7 +23,7 @@ public class RestClientCli {
     public static void main(String[] args) {
         val scanner = new Scanner(System.in);
         try (val client = HttpClient.newHttpClient()) {
-            while (true) {
+            while (scanner.hasNextLine()) {
                 try {
                     log.info("Please input a line");
                     val prompt = scanner.nextLine();

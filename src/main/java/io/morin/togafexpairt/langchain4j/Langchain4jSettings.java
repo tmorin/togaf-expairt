@@ -102,6 +102,19 @@ class Langchain4jSettings {
     );
 
     /**
+     * Enable the query routing.
+     * <p>
+     * When enabled, the query routing will be used to route the queries to the appropriate qdrant collection.
+     * There is one collection per {@link io.morin.togafexpairt.core.TogafLibraryRegistry}.
+     * The successful routing is mostly based on the LLM model.
+     * If the routing fails, the query will not be augmented with the embeddings.
+     * <p>
+     * When disabled, the queries won't be routed and a single collection will be used.
+     */
+    @Builder.Default
+    boolean queryRoutingEnabled = SettingReader.readBoolean("togafexpairt.langchain4j.query_routing_enabled", false);
+
+    /**
      * The settings for the Mistral integration.
      */
     @Value
