@@ -6,28 +6,36 @@
 ## Requirements
 
 - Java 21
+- Docker Compose
+
+Two external services are required to run the application:
+
+- [Ollama](https://ollama.com)
+- [Qdrant](https://qdrant.tech)
 
 ## Run
 
-TOGAF Expairt is a plain Java application that can be run from the command line.
-The following command will start the application:
+The application is available as a Docker image, an executable JAR, or a Docker Compose stack.
 
-**Start the REST server**
+The following command will start the application using Docker Compose:
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.restserver.RestServer
+docker compose up
 ```
 
-**Chat with the server using a CLI prompt**
+The Docker Compose stack will start all required services and the application itself.
+Moreover, the installation side models like LLM and embeddings will be downloaded and installed.
+Finally, the knowledge base will be indexed.
+So, once up and running, you can chat with the server using a CLI prompt:
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.cli.RestClientCli
+docker run --rm -it --network host ghcr.io/tmorin/togaf-expairt:latest io.morin.togafexpairt.cli.RestClientCli
 ```
 
-**Perform an indexation or re-indexation**
+You can also force the re-indexation of the knowledge base:
 
 ```shell
-java -cp togaf-expairt.jar io.morin.togafexpairt.cli.IndexerCli
+docker run --rm -it --network host ghcr.io/tmorin/togaf-expairt:latest io.morin.togafexpairt.cli.IndexerCli
 ```
 
 ## Configuration
@@ -49,7 +57,7 @@ togafexpairt_langchain4j_integration=MISTRAL java -jar togafexpairt-0.0.1-SNAPSH
 | Key                                                    | Default                        | Enumeration                      |
 |--------------------------------------------------------|--------------------------------|----------------------------------|
 | `togafexpairt.langchain4j.chat_model`                  | `OLLAMA`                       | `MISTRAL`, `OLLAMA`              |
-| `togafexpairt.langchain4j.embedding_model`             | `OLLAMA`                       | `MINI_LM`, `MINI_LM_Q`, `OLLAMA` |
+| `togafexpairt.langchain4j.embedding_model`             | `MINI_LM`                      | `MINI_LM`, `MINI_LM_Q`, `OLLAMA` |
 | `togafexpairt.langchain4j.dimension`                   | `384`                          |                                  |
 | `togafexpairt.langchain4j.max_memory_messages`         | `20`                           |                                  |
 | `togafexpairt.langchain4j.max_segment_size_in_chars`   | `500`                          |                                  |
@@ -65,29 +73,6 @@ togafexpairt_langchain4j_integration=MISTRAL java -jar togafexpairt-0.0.1-SNAPSH
 | `togafexpairt.restserver.host`                         | `localhost`                    |                                  |
 | `togafexpairt.restserver.port`                         | `9090`                         |                                  |
 | `togafexpairt.rest_cli.prompt_url`                     | `http://localhost:9090/prompt` |                                  |
-
-## Dependencies
-
-Start Ollama and Qdrant with Docker Compose:
-
-```shell
-docker compose up
-```
-
-Stop Ollama and Qdrant with Docker Compose:
-```shell
-docker compose down --remove-orphans
-```
-
-Stop Ollama and Qdrant with Docker Compose:
-```shell
-docker compose down --remove-orphans --volumes
-```
-
-Open the Qdrant dashboard:
-```shell
-open http://http://localhost:6333/dashboard
-```
 
 ## Build
 

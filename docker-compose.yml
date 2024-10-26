@@ -1,14 +1,19 @@
 services:
   qdrant:
-    image: qdrant/qdrant:latest
+    build:
+      context: src/test/docker/qdrant
     ports:
       - "6333:6333"
       - "6334:6334"
     volumes:
       - ./volumes/qdrant:/qdrant/storage
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:6333/dashboard || exit 1" ]
+      start_period: 3s
+      interval: 3s
   ollama-server:
     build:
-      context: src/main/docker/ollama
+      context: src/test/docker/ollama
     volumes:
       - ./volumes/ollama:/root/.ollama
     ports:
@@ -31,9 +36,11 @@ services:
         condition: service_healthy
   ollama-embeddings:
     image: ollama/ollama:latest
+    entrypoint:
+      - /bin/sh
+      - -c
     command:
-      - run
-      - nomic-embed-text
+      - "ollama run nomic-embed-text || true"
     volumes:
       - ./volumes/ollama:/root/.ollama
     environment:
@@ -41,3 +48,20 @@ services:
     depends_on:
       ollama-server:
         condition: service_healthy
+  restserver:
+    image: ghcr.io/tmorin/togaf-expairt:latest
+    ports:
+      - "9090:9090"
+    environment:
+      - togafexpairt.ollama.base_url=http://ollama-server:11434
+      - togafexpairt.qdrant.host=qdrant
+      - togafexpairt.restserver.host=0.0.0.0
+    command:
+      - io.morin.togafexpairt.restserver.RestServer
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      ollama-model:
+        condition: service_completed_successfully
+      ollama-embeddings:
+        condition: service_completed_successfully
