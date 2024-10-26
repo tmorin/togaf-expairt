@@ -63,6 +63,7 @@ togafexpairt_langchain4j_integration=MISTRAL java -jar togafexpairt-0.0.1-SNAPSH
 | `togafexpairt.langchain4j.max_segment_size_in_chars`   | `500`                          |                                  |
 | `togafexpairt.langchain4j.max_overlap_size_in_chars`   | `60`                           |                                  |
 | `togafexpairt.langchain4j.max_embedded_content_result` | `30`                           |                                  |
+| `togafexpairt.langchain4j.min_embedded_content_score`  | `0.5`                          |                                  |
 | `togafexpairt.mistral.model_name`                      | `mistral-medium`               |                                  |
 | `togafexpairt.mistral.api_key`                         |                                |                                  |
 | `togafexpairt.qdrant.host`                             | `localhost`                    |                                  |

@@ -70,6 +70,7 @@ public class AdapterConfigurationFactoryProvider implements AdapterConfiguration
                     .embeddingModel(embeddingModel)
                     .embeddingStore(qdrantEmbeddingStore)
                     .maxResults(langchain4jSettings.getMaxEmbeddedContentResult())
+                    .minScore(langchain4jSettings.getMinEmbeddedContentScore())
                     .build()
             )
             .streamingChatLanguageModel(streamingChatLanguageModel)

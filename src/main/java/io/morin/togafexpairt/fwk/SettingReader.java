@@ -35,6 +35,18 @@ public class SettingReader {
     }
 
     /**
+     * Reads a double from the environment variables or system properties.
+     *
+     * @param key the key to read
+     * @return the value of the key
+     */
+    public Double readDouble(@NonNull String key, double defaultValue) {
+        return Optional.ofNullable(System.getenv(key))
+            .map(Double::parseDouble)
+            .orElse(Double.parseDouble(System.getProperty(key, Double.toString(defaultValue))));
+    }
+
+    /**
      * Reads a boolean from the environment variables or system properties.
      *
      * @param key the key to read

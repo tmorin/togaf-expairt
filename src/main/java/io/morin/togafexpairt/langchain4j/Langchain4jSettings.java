@@ -93,6 +93,15 @@ class Langchain4jSettings {
     int maxEmbeddedContentResult = SettingReader.readInt("togafexpairt.langchain4j.max_embedded_content_result", 30);
 
     /**
+     * The minimum score when searching matching embedded content.
+     */
+    @Builder.Default
+    double minEmbeddedContentScore = SettingReader.readDouble(
+        "togafexpairt.langchain4j.min_embedded_content_score",
+        0.5
+    );
+
+    /**
      * The settings for the Mistral integration.
      */
     @Value
