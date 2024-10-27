@@ -33,32 +33,23 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
     public boolean isEmpty() {
         log.info("checking if the TOGAF library repository is empty");
         try (val qdrantClient = QdrantUtils.createClient(langchain4jSettings)) {
-            if (langchain4jSettings.isQueryRoutingEnabled()) {
-                final long size = Arrays.stream(TogafLibraryRegistry.values())
-                    .map(togafLibraryRegistry ->
-                        QdrantUtils.getCollectionName(langchain4jSettings, togafLibraryRegistry)
-                    )
-                    .map(collectionName -> {
-                        try {
-                            return qdrantClient.countAsync(collectionName).get();
-                        } catch (InterruptedException e) {
-                            log.error("interrupted while counting the collection", e);
-                            Thread.currentThread().interrupt();
-                            return 0L;
-                        } catch (ExecutionException e) {
-                            throw new IllegalStateException("Failed to count the collection", e);
-                        }
-                    })
-                    .reduce(Long::sum)
-                    .orElse(0L);
-                log.info("the TOGAF library repository is empty: {}", size == 0);
-                return size == 0;
-            } else {
-                val collectionName = QdrantUtils.getCollectionName(langchain4jSettings);
-                val size = qdrantClient.countAsync(collectionName).get();
-                log.info("the TOGAF library repository is empty: {}", size == 0);
-                return size == 0;
-            }
+            final long size = Arrays.stream(TogafLibraryRegistry.values())
+                .map(togafLibraryRegistry -> QdrantUtils.getCollectionName(langchain4jSettings, togafLibraryRegistry))
+                .map(collectionName -> {
+                    try {
+                        return qdrantClient.countAsync(collectionName).get();
+                    } catch (InterruptedException e) {
+                        log.error("interrupted while counting the collection", e);
+                        Thread.currentThread().interrupt();
+                        return 0L;
+                    } catch (ExecutionException e) {
+                        throw new IllegalStateException("Failed to count the collection", e);
+                    }
+                })
+                .reduce(Long::sum)
+                .orElse(0L);
+            log.info("the TOGAF library repository is empty: {}", size == 0);
+            return size == 0;
         }
     }
 
@@ -66,13 +57,9 @@ class QdrantTogafLibraryRepository implements TogafLibraryRepository {
     @SneakyThrows
     public void reset() {
         log.info("resetting the TOGAF library repository");
-        if (langchain4jSettings.isQueryRoutingEnabled()) {
-            Arrays.stream(TogafLibraryRegistry.values()).forEach(togafLibraryRegistry ->
-                QdrantUtils.resetCollections(langchain4jSettings, togafLibraryRegistry)
-            );
-        } else {
-            QdrantUtils.resetCollection(langchain4jSettings);
-        }
+        Arrays.stream(TogafLibraryRegistry.values()).forEach(togafLibraryRegistry ->
+            QdrantUtils.resetCollections(langchain4jSettings, togafLibraryRegistry)
+        );
     }
 
     @Override

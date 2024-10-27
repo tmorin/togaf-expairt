@@ -17,10 +17,7 @@ import io.morin.togafexpairt.api.TogafExpairt;
 import io.morin.togafexpairt.core.AdapterConfiguration;
 import io.morin.togafexpairt.core.AdapterConfigurationFactory;
 import io.morin.togafexpairt.core.TogafLibraryRegistry;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -71,25 +68,19 @@ public class AdapterConfigurationFactoryProvider implements AdapterConfiguration
         */
         val contentInjector = contentInjectorBuilder.build();
 
+        log.info("create the query router");
+        val queryRouter = LanguageModelQueryRouter.builder()
+            .chatLanguageModel(chatLanguageModel)
+            .retrieverToDescription(ingestorConfiguration.getRetrieverToDescriptions())
+            .fallbackStrategy(LanguageModelQueryRouter.FallbackStrategy.ROUTE_TO_ALL)
+            .build();
+
         log.info("create the retrieval augmentor");
-        val retrievalAugmentorBuilder = DefaultRetrievalAugmentor.builder()
+        val retrievalAugmentor = DefaultRetrievalAugmentor.builder()
             .contentInjector(contentInjector)
-            .queryTransformer(queryTransformer);
-
-        if (ingestorConfiguration.getRetrieverToDescription().isPresent()) {
-            log.info("create the query router");
-            val queryRouter = LanguageModelQueryRouter.builder()
-                .chatLanguageModel(chatLanguageModel)
-                .retrieverToDescription(ingestorConfiguration.getRetrieverToDescription().get())
-                .build();
-            retrievalAugmentorBuilder.queryRouter(queryRouter);
-        }
-
-        if (ingestorConfiguration.getContentRetriever().isPresent()) {
-            retrievalAugmentorBuilder.contentRetriever(ingestorConfiguration.getContentRetriever().get());
-        }
-
-        val retrievalAugmentor = retrievalAugmentorBuilder.build();
+            .queryTransformer(queryTransformer)
+            .queryRouter(queryRouter)
+            .build();
 
         log.info("create the langchain4jAssistant service");
         val langchain4jAssistant = AiServices.builder(Langchain4jAssistant.class)
@@ -114,100 +105,52 @@ public class AdapterConfigurationFactoryProvider implements AdapterConfiguration
         return AdapterConfiguration.builder().chat(chat).togafLibraryRepository(togafLibraryDocumentRepository).build();
     }
 
+    @Value
     @Builder
-    @AllArgsConstructor
     static class IngestorConfiguration {
 
-        @Getter
         @Singular
-        private Map<TogafLibraryRegistry, EmbeddingStoreIngestor> ingestors;
+        Map<TogafLibraryRegistry, EmbeddingStoreIngestor> ingestors;
 
-        private Map<ContentRetriever, String> retrieverToDescription;
-
-        private ContentRetriever contentRetriever;
-
-        Optional<Map<ContentRetriever, String>> getRetrieverToDescription() {
-            return Optional.ofNullable(retrieverToDescription);
-        }
-
-        Optional<ContentRetriever> getContentRetriever() {
-            return Optional.ofNullable(contentRetriever);
-        }
+        @Singular
+        Map<ContentRetriever, String> retrieverToDescriptions;
     }
 
     private IngestorConfiguration createIngestorConfiguration(
         @NonNull Langchain4jSettings langchain4jSettings,
         @NonNull EmbeddingModel embeddingModel
     ) {
+        log.info("create the ingestor configuration");
         val builder = IngestorConfiguration.builder();
+        for (TogafLibraryRegistry togafLibraryRegistry : TogafLibraryRegistry.values()) {
+            log.info("{} - ensure the Qdrant collection exists", togafLibraryRegistry);
+            QdrantUtils.ensureCollectionsExist(langchain4jSettings, togafLibraryRegistry);
 
-        if (langchain4jSettings.isQueryRoutingEnabled()) {
-            log.info("create the ingestor configuration with query routing");
-            val retrieverToDescription = new HashMap<ContentRetriever, String>();
-            for (TogafLibraryRegistry togafLibraryRegistry : TogafLibraryRegistry.values()) {
-                log.info("{} - ensure the Qdrant collection exists", togafLibraryRegistry);
-                QdrantUtils.ensureCollectionsExist(langchain4jSettings, togafLibraryRegistry);
-
-                log.info("{} - create the ingestor", togafLibraryRegistry);
-                val qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
-                    .host(langchain4jSettings.getQdrantSettings().getHost())
-                    .port(langchain4jSettings.getQdrantSettings().getPort())
-                    .collectionName(QdrantUtils.getCollectionName(langchain4jSettings, togafLibraryRegistry))
-                    .build();
-
-                log.info("{} - create the embedding store ingestor", togafLibraryRegistry);
-                val ingestor = EmbeddingStoreIngestor.builder()
-                    .documentTransformer(new HtmlToTextDocumentTransformer("#content"))
-                    .documentSplitter(DocumentSplitters.recursive(300, 60))
-                    .embeddingModel(embeddingModel)
-                    .embeddingStore(qdrantEmbeddingStore)
-                    .build();
-                builder.ingestor(togafLibraryRegistry, ingestor);
-
-                log.info("{} - create the content retriever", togafLibraryRegistry);
-                val contentRetriever = EmbeddingStoreContentRetriever.builder()
-                    .embeddingModel(embeddingModel)
-                    .embeddingStore(qdrantEmbeddingStore)
-                    .maxResults(langchain4jSettings.getMaxEmbeddedContentResult())
-                    .minScore(langchain4jSettings.getMinEmbeddedContentScore())
-                    .build();
-                retrieverToDescription.put(contentRetriever, togafLibraryRegistry.getTitle());
-            }
-            builder.retrieverToDescription(retrieverToDescription);
-        } else {
-            log.info("create the ingestor configuration without query routing");
-
-            log.info("ensure the Qdrant collection exists");
-            QdrantUtils.ensureCollectionsExist(langchain4jSettings);
-
-            log.info("create the ingestor");
+            log.info("{} - create the ingestor", togafLibraryRegistry);
             val qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
                 .host(langchain4jSettings.getQdrantSettings().getHost())
                 .port(langchain4jSettings.getQdrantSettings().getPort())
-                .collectionName(QdrantUtils.getCollectionName(langchain4jSettings))
+                .collectionName(QdrantUtils.getCollectionName(langchain4jSettings, togafLibraryRegistry))
                 .build();
 
-            log.info("create the embedding store ingestor");
+            log.info("{} - create the embedding store ingestor", togafLibraryRegistry);
             val ingestor = EmbeddingStoreIngestor.builder()
                 .documentTransformer(new HtmlToTextDocumentTransformer("#content"))
                 .documentSplitter(DocumentSplitters.recursive(300, 60))
                 .embeddingModel(embeddingModel)
                 .embeddingStore(qdrantEmbeddingStore)
                 .build();
-            Arrays.stream(TogafLibraryRegistry.values()).forEach(togafLibraryRegistry ->
-                builder.ingestor(togafLibraryRegistry, ingestor)
-            );
+            builder.ingestor(togafLibraryRegistry, ingestor);
 
-            log.info("create the content retriever");
+            log.info("{} - create the content retriever", togafLibraryRegistry);
             val contentRetriever = EmbeddingStoreContentRetriever.builder()
                 .embeddingModel(embeddingModel)
                 .embeddingStore(qdrantEmbeddingStore)
                 .maxResults(langchain4jSettings.getMaxEmbeddedContentResult())
                 .minScore(langchain4jSettings.getMinEmbeddedContentScore())
                 .build();
-            builder.contentRetriever(contentRetriever);
+            builder.retrieverToDescription(contentRetriever, togafLibraryRegistry.getDescription());
         }
-
         return builder.build();
     }
 }
