@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="RestClientCli" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="togafexpairt.rest_cli.prompt_url" value="http://localhost:9091/prompt" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="io.morin.togafexpairt.cli.RestClientCli" />
     <module name="togaf-expairt" />
     <extension name="coverage">

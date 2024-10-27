@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="RestServer" type="Application" factoryName="Application">
+    <envs>
+      <env name="togafexpairt.restserver.port" value="9091" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="io.morin.togafexpairt.restserver.RestServer" />
     <module name="togaf-expairt" />
     <extension name="coverage">
