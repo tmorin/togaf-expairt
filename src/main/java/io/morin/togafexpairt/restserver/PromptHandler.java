@@ -2,7 +2,6 @@ package io.morin.togafexpairt.restserver;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import io.morin.togafexpairt.api.SendMessageCommand;
 import io.morin.togafexpairt.api.StreamMessageCommand;
 import io.morin.togafexpairt.api.TogafExpairt;
 import java.io.IOException;

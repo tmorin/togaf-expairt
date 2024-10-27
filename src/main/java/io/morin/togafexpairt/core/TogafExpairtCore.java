@@ -1,5 +1,6 @@
 package io.morin.togafexpairt.core;
 
+import io.morin.togafexpairt.api.FeedCommand;
 import io.morin.togafexpairt.api.StreamMessageCommand;
 import io.morin.togafexpairt.api.TogafExpairt;
 import lombok.AccessLevel;
@@ -25,12 +26,12 @@ class TogafExpairtCore implements TogafExpairt {
     TogafLibraryFeeder togafLibraryFeeder;
 
     @Override
-    public void execute(@NonNull StreamMessageCommand sendMessageCommand) {
-        chat.ask(sendMessageCommand.getPrompt(), sendMessageCommand.getOutputStream());
+    public void execute(@NonNull StreamMessageCommand streamMessageCommand) {
+        chat.ask(streamMessageCommand.getPrompt(), streamMessageCommand.getOutputStream());
     }
 
     @Override
-    public void feed() {
+    public void execute(@NonNull FeedCommand feedCommand) {
         togafLibraryFeeder.feed();
     }
 }

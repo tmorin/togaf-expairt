@@ -20,7 +20,7 @@ class TogafExpairtIntegrationTest extends BaseIntegrationTest {
             .findFirst()
             .orElseThrow()
             .create(TogafExpairt.Settings.builder().build());
-        Assertions.assertDoesNotThrow(togafExpairt::feed);
+        Assertions.assertDoesNotThrow(() -> togafExpairt.execute(FeedCommand.builder().build()));
     }
 
     @Test
@@ -31,7 +31,8 @@ class TogafExpairtIntegrationTest extends BaseIntegrationTest {
             .findFirst()
             .orElseThrow()
             .create(TogafExpairt.Settings.builder().build());
-        Assertions.assertDoesNotThrow(togafExpairt::feed);
+        val feedCommand = FeedCommand.builder().build();
+        Assertions.assertDoesNotThrow(() -> togafExpairt.execute(feedCommand));
     }
 
     @Test

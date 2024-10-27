@@ -1,4 +1,4 @@
-package io.morin.togafexpairt.api;
+package io.morin.togafexpairt.restserver;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -9,7 +9,7 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder = true)
-public class SendMessageCommand {
+class SendMessageCommand {
 
     /**
      * The prompt.

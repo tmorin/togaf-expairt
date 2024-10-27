@@ -1,5 +1,6 @@
 package io.morin.togafexpairt.restserver;
 
+import io.morin.togafexpairt.api.FeedCommand;
 import io.morin.togafexpairt.api.TogafExpairt;
 import io.morin.togafexpairt.api.TogafExpairtFactory;
 import io.morin.togafexpairt.fwk.SettingReader;
@@ -27,7 +28,7 @@ public class RestServer {
             .orElseThrow();
 
         log.info("feeding the TOGAF library repository");
-        togafExpairt.feed();
+        togafExpairt.execute(FeedCommand.builder().build());
 
         log.info("starting REST server");
         Optional.of(PromptHandler.builder().togafExpairt(togafExpairt).build())

@@ -1,5 +1,6 @@
 package io.morin.togafexpairt.cli;
 
+import io.morin.togafexpairt.api.FeedCommand;
 import io.morin.togafexpairt.api.TogafExpairt;
 import io.morin.togafexpairt.api.TogafExpairtFactory;
 import java.util.ServiceLoader;
@@ -22,6 +23,6 @@ public class IndexerCli {
             .orElseThrow();
 
         log.info("feeding the TOGAF library repository");
-        togafExpairt.feed();
+        togafExpairt.execute(FeedCommand.builder().build());
     }
 }

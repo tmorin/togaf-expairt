@@ -2,6 +2,7 @@ package io.morin.togafexpairt.api;
 
 import io.morin.togafexpairt.fwk.SettingReader;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -14,14 +15,14 @@ public interface TogafExpairt {
      * The command handling is asynchronous and will return a StreamMessageResult immediately.
      * The provided OutputStream will be used to stream the result of the command.
      *
-     * @param sendMessageCommand the send message command
+     * @param streamMessageCommand the send message command
      */
-    void execute(StreamMessageCommand sendMessageCommand);
+    void execute(@NonNull StreamMessageCommand streamMessageCommand);
 
     /**
-     * Feed the TOGAF Library Repository.
+     * Execute the Feed Command.
      */
-    void feed();
+    void execute(@NonNull FeedCommand feedCommand);
 
     /**
      * The settings.

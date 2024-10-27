@@ -41,15 +41,19 @@ cli_indexer --> qdrant: Relationship('Writes embeddings', 'HTTP')
 @startuml component
 !include https://raw.githubusercontent.com/tmorin/plantuml-libs/master/distribution/c4model/single.puml
 
-Component("IndexerCli", "IndexerCli")
-Component("RestCli", "RestCli")
-Component("RestServer", "RestServer")
-Component("QdrantTogafLibraryRepository", "QdrantTogafLibraryRepository")
-Component("TogafLibraryFeeder", "TogafLibraryFeeder")
+Component("RestClientCli", "RestClientCli")
+package ports {
+    Component("IndexerCli", "IndexerCli")
+    Component("RestServer", "RestServer")
+}
 Component("TogafExpairtCore", "TogafExpairtCore")
-Component("Langchain4jChat", "Langchain4jChat")
+Component("TogafLibraryFeeder", "TogafLibraryFeeder")
+package adapters {
+    Component("QdrantTogafLibraryRepository", "QdrantTogafLibraryRepository")
+    Component("Langchain4jChat", "Langchain4jChat")
+}
 
-RestCli --> RestServer
+RestClientCli --> RestServer
 RestServer --> TogafExpairtCore
 IndexerCli --> TogafExpairtCore
 TogafExpairtCore --> Langchain4jChat
