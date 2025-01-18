@@ -24,13 +24,13 @@ class ChatLanguageModelFactory {
                 .apiKey(langchain4jSettings.getMistralSettings().getApiKey())
                 .modelName(langchain4jSettings.getMistralSettings().getModelName())
                 .logRequests(true)
-                .logResponses(false)
+                .logResponses(true)
                 .build();
             case OLLAMA -> OllamaChatModel.builder()
                 .baseUrl(langchain4jSettings.getOllamaSettings().getBaseUrl())
                 .modelName(langchain4jSettings.getOllamaSettings().getChatModelName())
                 .logRequests(true)
-                .logResponses(false)
+                .logResponses(true)
                 .build();
         };
     }

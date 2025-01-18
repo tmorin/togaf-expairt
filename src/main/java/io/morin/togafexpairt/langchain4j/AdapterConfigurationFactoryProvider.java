@@ -4,6 +4,7 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.document.transformer.jsoup.HtmlToTextDocumentTransformer;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
@@ -79,8 +80,25 @@ public class AdapterConfigurationFactoryProvider implements AdapterConfiguration
         if (ingestorConfiguration.getRetrieverToDescription().isPresent()) {
             log.info("create the query router");
             val queryRouter = LanguageModelQueryRouter.builder()
+                .promptTemplate(
+                    PromptTemplate.from(
+                        """
+                        You must help the selection of an embedding store.
+                        You must select the most suitable store based on a use query.
+                        You must only reply with a single number, i.e. the number of the matching embedding store.
+                        You must return the number before the `:` character.
+                        You must not provide explanations, notes or any other textual content.
+                        If there is no match then reply `no match`.
+                        **The embedding store**:
+                        {{options}}
+                        **User query**:
+                        {{query}}
+                        """
+                    )
+                )
                 .chatLanguageModel(chatLanguageModel)
                 .retrieverToDescription(ingestorConfiguration.getRetrieverToDescription().get())
+                .fallbackStrategy(LanguageModelQueryRouter.FallbackStrategy.FAIL)
                 .build();
             retrievalAugmentorBuilder.queryRouter(queryRouter);
         }

@@ -18,6 +18,8 @@ services:
       - ./volumes/ollama:/root/.ollama
     ports:
       - "11434:11434"
+    environment:
+      - togafexpairt.ollama.chat_model_name=$ollama_chat_model
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:11434 || exit 1" ]
       start_period: 3s
@@ -26,7 +28,7 @@ services:
     image: ollama/ollama:latest
     command:
       - run
-      - llama3.2:1b
+      - "$ollama_chat_model"
     volumes:
       - ./volumes/ollama:/root/.ollama
     environment:

@@ -3,6 +3,7 @@ package io.morin.togafexpairt.langchain4j;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
+import dev.langchain4j.model.mistralai.MistralAiEmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,6 +27,12 @@ class EmbeddingModelFactory {
             case OLLAMA -> OllamaEmbeddingModel.builder()
                 .baseUrl(langchain4jSettings.getOllamaSettings().getBaseUrl())
                 .modelName(langchain4jSettings.getOllamaSettings().getEmbeddingModelName())
+                .logRequests(true)
+                .logResponses(false)
+                .build();
+            case MISTRAL -> MistralAiEmbeddingModel.builder()
+                .apiKey(langchain4jSettings.getMistralSettings().getApiKey())
+                .modelName(langchain4jSettings.getMistralSettings().getModelName())
                 .logRequests(true)
                 .logResponses(false)
                 .build();

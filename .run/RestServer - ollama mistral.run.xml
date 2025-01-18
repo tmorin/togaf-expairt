@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="RestServer" type="Application" factoryName="Application">
+  <configuration default="false" name="RestServer - ollama mistral" type="Application" factoryName="Application">
     <envs>
+      <env name="togafexpairt.ollama.chat_model_name" value="mistral" />
       <env name="togafexpairt.restserver.port" value="9091" />
       <env name="togafexpairt.langchain4j.query_routing_enabled" value="true" />
     </envs>

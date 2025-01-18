@@ -41,7 +41,8 @@ class Langchain4jSettings {
     enum EmbeddingModel {
         MINI_LM,
         MINI_LM_Q,
-        OLLAMA
+        OLLAMA,
+        MISTRAL
     }
 
     /**
@@ -90,7 +91,7 @@ class Langchain4jSettings {
      * The maximum number when searching matching embedded content.
      */
     @Builder.Default
-    int maxEmbeddedContentResult = SettingReader.readInt("togafexpairt.langchain4j.max_embedded_content_result", 30);
+    int maxEmbeddedContentResult = SettingReader.readInt("togafexpairt.langchain4j.max_embedded_content_result", 10);
 
     /**
      * The minimum score when searching matching embedded content.
